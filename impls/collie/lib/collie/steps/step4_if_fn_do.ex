@@ -1,4 +1,4 @@
-defmodule Collie.Steps4IfFnDo do
+defmodule Collie.Steps.Step4IfFnDo do
   alias Collie.{Env, Printer, Reader, Types}
 
   defp read(s), do: Reader.read_str(s)

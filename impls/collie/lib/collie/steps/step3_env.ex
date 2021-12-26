@@ -1,4 +1,4 @@
-defmodule Collie.Steps3Env do
+defmodule Collie.Steps.Step3Env do
   alias Collie.{Env, Printer, Reader, Types}
 
   defp read(s), do: Reader.read_str(s)

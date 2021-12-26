@@ -1,4 +1,4 @@
-defmodule Collie.Steps1ReadPrint do
+defmodule Collie.Steps.Step1ReadPrint do
   alias Collie.{Printer, Reader}
   defp read(s), do: Reader.read_str(s)
 

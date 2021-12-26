@@ -1,4 +1,4 @@
-defmodule Collie.Steps0Repl do
+defmodule Collie.Steps.Step0Repl do
   defp read(s) do
     s
   end
