@@ -37,7 +37,6 @@ defmodule Collie.Reader do
     end
   end
 
-
   def read_list(tokens, acc \\ []) do
     read_seq(tokens, acc, ")")
   end
@@ -61,7 +60,7 @@ defmodule Collie.Reader do
 
   def read_charlist([next | tail], acc \\ []) do
     case next do
-      "\"" -> {"\"#{acc}\"",  tail}
+      "\"" -> {"\"#{acc}\"", tail}
       _ -> read_charlist(tail, [next | acc])
     end
   end
@@ -81,7 +80,6 @@ defmodule Collie.Reader do
       {first, tail} = read_form(tokens)
       {second, second_tail} = read_form(tail)
       {[Types.symbol("with-meta"), second, first], second_tail}
-
     rescue
       _ -> throw({:error, "Unexpected EOF"})
     end
@@ -111,12 +109,13 @@ defmodule Collie.Reader do
   defp read_atom("false"), do: false
   defp read_atom("nil"), do: nil
   defp read_atom(":" <> rest), do: String.to_atom(rest)
+
   defp read_atom(token) do
     cond do
       String.match?(token, ~r/^"(?:\\.|[^\\"])*"$/) ->
         token
-          |> Code.string_to_quoted
-          |> elem(1)
+        |> Code.string_to_quoted()
+        |> elem(1)
 
       String.starts_with?(token, "\"") ->
         throw({:error, "expected '\"', got EOF"})

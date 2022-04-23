@@ -8,11 +8,10 @@ defmodule Collie.Core do
     :*,
     :/,
     :<,
-    :>,
+    :>
   ]
 
   def namespace do
-
     wrapped =
       %{
         "=" => &equal/2,
@@ -28,7 +27,8 @@ defmodule Collie.Core do
         "atom" => &CAtom.new/1,
         "atom?" => &CAtom.atom?/1,
         "deref" => &CAtom.deref/1,
-        "reset!" => &CAtom.reset!/2
+        "reset!" => &CAtom.reset!/2,
+        "cons" => &cons/2
       }
       |> wrap_all()
 
@@ -38,7 +38,8 @@ defmodule Collie.Core do
       "prn" => &prn/1,
       "str" => &str/1,
       "println" => &println/1,
-      "swap!" => &CAtom.swap!/1
+      "swap!" => &CAtom.swap!/1,
+      "concat" => &concat/1
     }
 
     wrapped
@@ -70,12 +71,22 @@ defmodule Collie.Core do
 
   def str(args) do
     args
-    |> Enum.map(& Printer.pr_str(&1, false))
+    |> Enum.map(&Printer.pr_str(&1, false))
     |> Enum.join()
   end
 
+  defp cons(head, tail) when is_list(tail), do: [head | tail]
+
+  defp cons(head, {:vector, tail}), do: {:vector, [head | tail]}
+
+  def concat([{:vector, l}]), do: l
+  def concat([l]) when is_list(l), do: l
+  def concat([{:vector, first} | rest]), do: concat([first | rest])
+  def concat([first | rest]) when is_list(first), do: Enum.concat(first, concat(rest))
+
   defp empty?({:vector, []}), do: true
   defp empty?({:vector, _}), do: false
+
   defp empty?([]), do: true
   defp empty?(l) when is_list(l), do: false
 
@@ -112,11 +123,13 @@ defmodule Collie.Core do
 
   defp vectors_to_list_deep({:vector, ast}), do: vectors_to_list_deep(ast)
   defp vectors_to_list_deep(ast) when is_list(ast), do: Enum.map(ast, &vectors_to_list_deep/1)
+
   defp vectors_to_list_deep(ast) when is_map(ast) do
     ast
     |> Enum.map(fn {key, value} -> {key, vectors_to_list_deep(value)} end)
     |> Enum.into(%{})
   end
+
   defp vectors_to_list_deep(ast), do: ast
 
   defp equal(a, b), do: vectors_to_list_deep(a) == vectors_to_list_deep(b)

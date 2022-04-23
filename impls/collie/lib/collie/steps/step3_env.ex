@@ -15,7 +15,7 @@ defmodule Collie.Steps.Step3Env do
   end
 
   def eval_ast([{:symbol, "if"}, condition, if_true, if_false]) do
-    case eval_ast(condition)  do
+    case eval_ast(condition) do
       true -> eval_ast(if_true)
       v when v in [false, nil] -> eval_ast(if_false)
     end
@@ -26,7 +26,7 @@ defmodule Collie.Steps.Step3Env do
       inner_env = Env.new(env)
 
       Enum.zip(binds, params)
-        |> Enum.each(fn {key, value} -> Env.set(inner_env, key, value) end)
+      |> Enum.each(fn {key, value} -> Env.set(inner_env, key, value) end)
 
       eval_ast(exprs, inner_env)
     end

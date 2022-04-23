@@ -25,7 +25,6 @@ defmodule Collie.Steps.Step6File do
   end
 
   defp exec_file(filename, env) do
-
   end
 
   defp bootstrap(args, env) do
@@ -44,6 +43,7 @@ defmodule Collie.Steps.Step6File do
     case args do
       [] ->
         set_argv([], env)
+
       [filename | argv] ->
         set_argv(argv, env)
         rep("(eval (load-file #{inspect(filename)}))", env)
@@ -61,7 +61,6 @@ defmodule Collie.Steps.Step6File do
 
       [{:symbol, "let*"}, bindings, ast] ->
         do_let(bindings, ast, env)
-
 
       [{:symbol, "do"} | rest] ->
         do_do(rest, env)
@@ -116,7 +115,7 @@ defmodule Collie.Steps.Step6File do
   end
 
   defp do_if(condition, if_true, if_false, env) do
-    case eval(condition, env)  do
+    case eval(condition, env) do
       v when v in [false, nil] -> eval(if_false, env)
       _ -> eval(if_true, env)
     end

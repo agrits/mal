@@ -15,7 +15,7 @@ defmodule Collie.Atom do
   end
 
   def swap!([{:atom, pid}, fun | args]) do
-    new_value = apply(fun, [[deref({:atom, pid})| args]])
+    new_value = apply(fun, [[deref({:atom, pid}) | args]])
     {:atom, pid} |> reset!(new_value)
   end
 end
